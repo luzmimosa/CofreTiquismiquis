@@ -3,7 +3,46 @@
     {
       "biome": "minecraft:plains",
       "lootTables": [
-        "minecraft:chests/stronghold_library"
+        "minecraft:chests/stronghold_library",
+        "minecraft:chests/village/village_plains_house"
+      ]
+    },
+    {
+      "biome": "minecraft:the_end",
+      "lootTables": [
+        "minecraft:chests/end_city_treasure",
+        "minecraft:chests/bastion_bridge"
+      ]
+    },
+    {
+      "biome": "minecraft:desert",
+        "lootTables": [
+            "minecraft:chests/desert_pyramid",
+            "cofretiquismiquis:chests/warm_chest"
+        ]
+    },
+    {
+      "biome": "minecraft:frozen_peaks",
+      "lootTables": [
+        "cofretiquismiquis:chests/frozen_chest"
+      ]
+    },
+    {
+      "biome": "minecraft:jungle",
+      "lootTables": [
+        "cofretiquismiquis:chests/jungle_chest"
+      ]
+    },
+    {
+      "biome": "minecraft:river",
+      "lootTables": [
+        "cofretiquismiquis:chests/river_chest"
+      ]
+    },
+    {
+      "biome": "minecraft:ocean",
+      "lootTables": [
+        "cofretiquismiquis:chests/sea_chest"
       ]
     }
   ],
