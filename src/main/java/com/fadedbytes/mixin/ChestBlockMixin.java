@@ -1,16 +1,14 @@
 package com.fadedbytes.mixin;
 
 import com.fadedbytes.chest.BiomedChestContent;
-import com.fadedbytes.chest.UsableContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.entity.LootableContainerBlockEntity;
+import net.minecraft.block.enums.ChestType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -19,8 +17,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import static com.fadedbytes.CofreTiquismiquis.LOGGER;
 
 
 @Mixin(ChestBlock.class)
@@ -36,19 +32,17 @@ public abstract class ChestBlockMixin {
             ChestBlockEntity chestEntity = this.getExpectedEntityType().get(world, pos);
             assert chestEntity != null;
 
-            UsableContainer usableContainer = (UsableContainer) chestEntity;
+            BiomedChestContent.processChest(chestEntity, pos, world);
 
-            if (!usableContainer.isUsed()) {
+            ChestType type = state.get(ChestBlock.CHEST_TYPE);
 
-                String biomeKey = world.getBiome(pos).getKey().orElseThrow().getValue().toString();
-                LOGGER.debug("Biome key: " + biomeKey);
+            BlockPos secondChestPos = pos.offset(ChestBlock.getFacing(state));
+            if (world.getBlockState(secondChestPos).getBlock() == state.getBlock()) {
+                ChestBlockEntity secondChestEntity = this.getExpectedEntityType().get(world, secondChestPos);
+                assert secondChestEntity != null;
 
-                Identifier lootTable = BiomedChestContent.getLootTableForBiome(biomeKey, world.getRandom());
-
-                LootableContainerBlockEntity.setLootTable(world, world.getRandom(), pos, lootTable);
-                usableContainer.setUsed(true);
+                BiomedChestContent.processChest(secondChestEntity, secondChestPos, world);
             }
         }
     }
-
 }
