@@ -1,0 +1,10 @@
+{
+  "biomes": [
+    {
+      "biome": "minecraft:plains",
+      "loot": "minecraft:chests/stronghold_library"
+    }
+  ],
+
+  "default": "minecraft:chests/spawn_bonus_chest"
+}
