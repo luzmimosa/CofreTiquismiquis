@@ -13,10 +13,22 @@ import static com.fadedbytes.CofreTiquismiquis.LOGGER;
 public class BiomedChestContent {
 
     private static LootTableSelector selector = null;
+    private static LootTableSelector hotSwapSelector = null;
     public static Identifier getLootTableForBiome(String biomeKey, Random random) {
-        if (selector == null) return null;
+        Identifier lootTable = null;
 
-        return selector.lootTableFromBiome(biomeKey, random);
+        if (selector != null) {
+            lootTable = selector.lootTableFromBiome(biomeKey, random);
+        }
+
+        if (hotSwapSelector != null) {
+            Identifier hotTable = hotSwapSelector.lootTableFromBiome(biomeKey, random);
+            if (!hotTable.toString().equals("minecraft:undefined")) {
+                lootTable = hotTable;
+            }
+        }
+
+        return lootTable;
     }
 
     public static void setSelector(LootTableSelector selector) {
@@ -40,6 +52,10 @@ public class BiomedChestContent {
             LootableContainerBlockEntity.setLootTable(world, world.getRandom(), position, lootTable);
             usableContainer.setUsed(true);
         }
+    }
+
+    public static void setHotSwapSelector(LootTableSelector hotSwapSelector) {
+        BiomedChestContent.hotSwapSelector = hotSwapSelector;
     }
 
 }

@@ -22,6 +22,8 @@ public class LootTableSelector {
 
             if (!lootTables.isEmpty()) {
                 return lootTables.get(random.nextBetween(0, lootTables.size() - 1));
+            } else {
+                return new Identifier("minecraft", "empty");
             }
         }
 

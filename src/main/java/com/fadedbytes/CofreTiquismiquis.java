@@ -1,6 +1,7 @@
 package com.fadedbytes;
 
 import com.fadedbytes.chest.BiomedChestContent;
+import com.fadedbytes.data.Configuration;
 import com.fadedbytes.data.LootTableSelector;
 import com.fadedbytes.data.LootTableSelectorDeserializer;
 import net.fabricmc.api.ModInitializer;
@@ -9,7 +10,6 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -25,12 +25,18 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class CofreTiquismiquis implements ModInitializer {
 	public static final String MOD_ID = "cofretiquismiquis";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	private Configuration config;
 
 	@Override
 	public void onInitialize() {
 
+		this.config = new Configuration();
+
 		this.registerChestlootCommand();
 		this.registerDataReloader();
+
+		this.config = new Configuration();
+		this.reloadHotSwapData();
 
 	}
 
@@ -38,22 +44,15 @@ public class CofreTiquismiquis implements ModInitializer {
 		CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> dispatcher.register(
 				literal("chestloot")
 						.executes(context -> {
-							context.getSource().sendMessage(Text.literal("Usa /chestloot reload para recargar las loot tables de cofres."));
+							context.getSource().sendMessage(Text.literal("§cUsa /chestloot reload para recargar las loot tables de cofres."));
 
 							return 0;
 						})
 						.requires(source -> source.hasPermissionLevel(3))
 						.then(literal("reload")
 								.executes(context -> {
-									context.getSource().sendMessage(Text.literal("Recargando loot tables de cofres..."));
-
-									ResourcePackManager manager = context.getSource().getServer().getDataPackManager();
-									manager.scanPacks();
-
-									context.getSource().getServer().reloadResources(manager.getEnabledNames()).exceptionally((exception) -> {
-										context.getSource().sendError(Text.literal("Error recargando loot tables de cofres: " + exception.getMessage()));
-										return null;
-									});
+									context.getSource().sendMessage(Text.literal("§6Recargando loot tables de cofres..."));
+									this.reloadHotSwapData();
 
 									return 1;
 								})
@@ -97,5 +96,10 @@ public class CofreTiquismiquis implements ModInitializer {
 		};
 
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(lootTableSelectorLoader);
+	}
+
+	public void reloadHotSwapData() {
+		LootTableSelector lootTableSelector = this.config.readHotSwappedLootTableSelector();
+		BiomedChestContent.setHotSwapSelector(lootTableSelector);
 	}
 }
