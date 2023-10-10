@@ -20,7 +20,7 @@ public class Configuration {
             String json = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
             return LootTableSelectorDeserializer.readLootTableSelector(json);
         } catch (IOException exception) {
-            LOGGER.error("Error reading chest_biome.json file", exception);
+            LOGGER.error("Error reading chest_biome.json hot file", exception);
             return null;
         }
     }
