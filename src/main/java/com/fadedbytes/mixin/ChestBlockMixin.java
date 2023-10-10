@@ -5,7 +5,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.ChestBlockEntity;
-import net.minecraft.block.enums.ChestType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -33,8 +32,6 @@ public abstract class ChestBlockMixin {
             assert chestEntity != null;
 
             BiomedChestContent.processChest(chestEntity, pos, world);
-
-            ChestType type = state.get(ChestBlock.CHEST_TYPE);
 
             BlockPos secondChestPos = pos.offset(ChestBlock.getFacing(state));
             if (world.getBlockState(secondChestPos).getBlock() == state.getBlock()) {

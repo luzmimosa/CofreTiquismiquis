@@ -11,14 +11,11 @@ import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourceType;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ReloadCommand;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -38,39 +35,37 @@ public class CofreTiquismiquis implements ModInitializer {
 	}
 
 	private void registerChestlootCommand() {
-		CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> {
-			dispatcher.register(
-					literal("chestloot")
-							.executes(context -> {
-								context.getSource().sendMessage(Text.literal("Usa /chestloot reload para recargar las loot tables de cofres."));
+		CommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess, environment) -> dispatcher.register(
+				literal("chestloot")
+						.executes(context -> {
+							context.getSource().sendMessage(Text.literal("Usa /chestloot reload para recargar las loot tables de cofres."));
 
-								return 0;
-							})
-							.requires(source -> source.hasPermissionLevel(3))
-							.then(literal("reload")
-									.executes(context -> {
-										context.getSource().sendMessage(Text.literal("Recargando loot tables de cofres..."));
+							return 0;
+						})
+						.requires(source -> source.hasPermissionLevel(3))
+						.then(literal("reload")
+								.executes(context -> {
+									context.getSource().sendMessage(Text.literal("Recargando loot tables de cofres..."));
 
-										ResourcePackManager manager = context.getSource().getServer().getDataPackManager();
-										manager.scanPacks();
+									ResourcePackManager manager = context.getSource().getServer().getDataPackManager();
+									manager.scanPacks();
 
-										context.getSource().getServer().reloadResources(manager.getEnabledNames()).exceptionally((exception) -> {
-											context.getSource().sendError(Text.literal("Error recargando loot tables de cofres: " + exception.getMessage()));
-											return null;
-										});
+									context.getSource().getServer().reloadResources(manager.getEnabledNames()).exceptionally((exception) -> {
+										context.getSource().sendError(Text.literal("Error recargando loot tables de cofres: " + exception.getMessage()));
+										return null;
+									});
 
-										return 1;
-									})
-							)
-			);
-		}));
+									return 1;
+								})
+						)
+		)));
 	}
 
 	private void registerDataReloader() {
 		/*
 		 "By all laws of programming, you should not be able to instantiate an interface in java,
 		 its methods are too abstract to call.
-		 However, modders don't care about what actual programmers think so we will do it anyway."
+		 However, modders don't care about what actual programmers think, so we will do it anyway."
 
 		  -- Fabric documentation
 		 */
